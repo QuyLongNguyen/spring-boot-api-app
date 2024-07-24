@@ -1,38 +1,36 @@
 package com.example.security.services;
 
-import java.time.Instant;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.example.exception.TokenRefreshException;
 import com.example.models.RefreshToken;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.repository.RefreshTokenRepository;
+import com.example.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.exception.TokenRefreshException;
-import com.example.repository.RefreshTokenRepository;
-import com.example.repository.UserRepository;
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
   @Value("${app.jwt.refresh-token-expires-time}")
   private Long refreshTokenDurationMs;
 
-  @Autowired
-  private RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
 
-  @Autowired
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  public Optional<RefreshToken> findByToken(String token) {
+    public Optional<RefreshToken> findByToken(String token) {
     return refreshTokenRepository.findByToken(token);
   }
 
   public RefreshToken createRefreshToken(Long userId) {
     RefreshToken refreshToken = new RefreshToken();
 
-    refreshToken.setUser(userRepository.findById(userId).get());
+    refreshToken.setUser(userRepository.findById(userId).orElseThrow());
     refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
     refreshToken.setToken(UUID.randomUUID().toString());
 

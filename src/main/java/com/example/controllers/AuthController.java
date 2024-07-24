@@ -1,14 +1,7 @@
 package com.example.controllers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
-import com.example.exception.TokenRefreshException;
 import com.example.enums.UserRole;
+import com.example.exception.TokenRefreshException;
 import com.example.models.RefreshToken;
 import com.example.models.Role;
 import com.example.models.User;
@@ -18,46 +11,43 @@ import com.example.payload.request.TokenRefreshRequest;
 import com.example.payload.response.JwtResponse;
 import com.example.payload.response.MessageResponse;
 import com.example.payload.response.TokenRefreshResponse;
+import com.example.repository.RoleRepository;
+import com.example.repository.UserRepository;
 import com.example.security.jwt.JwtUtils;
 import com.example.security.services.RefreshTokenService;
 import com.example.security.services.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.repository.RoleRepository;
-import com.example.repository.UserRepository;
+import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
-  @Autowired
-  AuthenticationManager authenticationManager;
 
-  @Autowired
-  UserRepository userRepository;
+  private final AuthenticationManager authenticationManager;
 
-  @Autowired
-  RoleRepository roleRepository;
+  private final UserRepository userRepository;
 
-  @Autowired
-  PasswordEncoder encoder;
+  private final RoleRepository roleRepository;
 
-  @Autowired
-  JwtUtils jwtUtils;
+  private final PasswordEncoder encoder;
+  private final JwtUtils jwtUtils;
 
-  @Autowired
-  RefreshTokenService refreshTokenService;
+  private final RefreshTokenService refreshTokenService;
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -71,7 +61,7 @@ public class AuthController {
 
     String jwt = jwtUtils.generateJwtToken(userDetails);
 
-    List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+    List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
         .collect(Collectors.toList());
 
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());

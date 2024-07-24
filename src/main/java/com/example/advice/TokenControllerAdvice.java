@@ -22,4 +22,13 @@ public class TokenControllerAdvice {
         ex.getMessage(),
         request.getDescription(false));
   }
+
+  @ExceptionHandler(Exception.class)
+  public ErrorMessage handleException(Exception ex, WebRequest request) {
+      return new ErrorMessage(
+          HttpStatus.INTERNAL_SERVER_ERROR.value(),
+          new Date(),
+          ex.getMessage(),
+          request.getDescription(false));
+  }
 }
