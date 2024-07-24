@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/crud?useSSL=false
+    username: ${USERNAME}
+    password: ${PASSWD}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+
+
+app:
+  jwt:
+    secret-key: ${SECRET_KEY}
+    access-token-expires-time: 60000
+    refresh-token-expires-time: 120000
