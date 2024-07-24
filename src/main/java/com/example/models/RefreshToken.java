@@ -1,10 +1,15 @@
 package com.example.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.Instant;
 
 import javax.persistence.*;
 
 @Entity(name = "refreshtoken")
+@Getter
+@Setter
 public class RefreshToken {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,40 +24,5 @@ public class RefreshToken {
 
   @Column(nullable = false)
   private Instant expiryDate;
-
-  public RefreshToken() {
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public String getToken() {
-    return token;
-  }
-
-  public void setToken(String token) {
-    this.token = token;
-  }
-
-  public Instant getExpiryDate() {
-    return expiryDate;
-  }
-
-  public void setExpiryDate(Instant expiryDate) {
-    this.expiryDate = expiryDate;
-  }
 
 }
