@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity(name = "refreshtoken")
 @Getter
 @Setter
-public class RefreshToken {
+public class RefreshToken extends AbstractAuditor {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
